@@ -1,0 +1,1840 @@
+<!DOCTYPE html>
+<html lang="de" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Periodensystem der Schwurbelei (PdS)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            schwurbler: {
+              dark: '#0a0d14',
+              card: '#111726',
+              border: '#1e293b',
+              accent: '#38bdf8'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600;700&family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #07090e;
+      color: #f1f5f9;
+      user-select: none;
+    }
+    .font-mono-code {
+      font-family: 'Fira Code', monospace;
+    }
+    /* Glowing borders and element styling */
+    .element-card {
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+    .element-card:hover {
+      transform: translateY(-3px) scale(1.06);
+      z-index: 30;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.7), 0 0 15px currentColor;
+    }
+    .element-card:active {
+      transform: scale(0.98);
+    }
+    /* Continuum hazard strip */
+    .hazard-stripe {
+      background: repeating-linear-gradient(
+        45deg,
+        rgba(234, 179, 8, 0.08),
+        rgba(234, 179, 8, 0.08) 15px,
+        rgba(0, 0, 0, 0.3) 15px,
+        rgba(0, 0, 0, 0.3) 30px
+      );
+    }
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar {
+      height: 8px;
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #090d16;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+    @media print {
+      body { background: #ffffff !important; color: #000000 !important; }
+      .no-print { display: none !important; }
+      .element-card { border: 1px solid #94a3b8 !important; color: #000 !important; }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-cyan-500 selection:text-black">
+
+  <header class="border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-md sticky top-0 z-40 px-4 py-3 sm:px-6">
+    <div class="max-w-[1700px] mx-auto flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 via-rose-500 to-cyan-400 p-0.5 shadow-lg shadow-cyan-500/20">
+          <div class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center font-mono-code font-black text-transparent bg-clip-text bg-gradient-to-tr from-amber-400 to-cyan-300">
+            Ψ
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-lg sm:text-xl font-extrabold tracking-tight text-white flex items-center gap-1.5">
+              Periodensystem der Schwurbelei
+              <span class="text-xs px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-mono-code font-normal">v2.4 Telegram-Edition</span>
+            </h1>
+          </div>
+          <p class="text-xs text-slate-400 hidden sm:block">Systematische Nomenklatur alternativer Wahrheiten und feinstofflicher Faktenresistenz</p>
+        </div>
+      </div>
+
+      <!-- Controls: Search, Sound, Synthesizer, Reset -->
+      <div class="flex items-center flex-wrap gap-2">
+        <div class="relative">
+          <input id="searchInput" type="text" placeholder="Element suchen (z. B. 5G, Zucker, Tante)..." 
+            class="bg-slate-900 border border-slate-700/80 text-xs rounded-lg pl-8 pr-3 py-2 w-48 sm:w-64 focus:outline-none focus:ring-2 focus:ring-cyan-400 text-slate-200 placeholder-slate-500 font-medium transition-all" />
+          <svg class="w-4 h-4 text-slate-400 absolute left-2.5 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+        </div>
+
+        <button id="soundToggleBtn" title="Schwingungs-Audio an/aus" class="p-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 hover:text-cyan-400 hover:border-cyan-500 transition-colors">
+          <svg id="soundIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+          </svg>
+        </button>
+
+        <button id="openFormulaBtn" class="flex items-center gap-1.5 text-xs bg-slate-900 hover:bg-slate-800 border border-amber-500/40 hover:border-amber-400 text-amber-300 px-3 py-2 rounded-lg transition-colors font-medium shadow-sm">
+          <span>📐</span>
+          <span class="hidden sm:inline">Wirkungsgesetz</span>
+        </button>
+
+        <button id="randomPickBtn" class="flex items-center gap-1.5 text-xs bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 px-3 py-2 rounded-lg transition-colors font-medium">
+          <span>🎲</span>
+          <span class="hidden sm:inline">Zufälliges Dogma</span>
+        </button>
+
+        <button id="openLabBtn" class="flex items-center gap-1.5 text-xs bg-gradient-to-r from-amber-500 to-rose-500 hover:from-amber-600 hover:to-rose-600 text-slate-950 font-bold px-3 py-2 rounded-lg shadow-md transition-all">
+          <span>⚗️</span>
+          <span>Schwurbel-Mischer</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="max-w-[1700px] mx-auto w-full px-4 pt-4 pb-2">
+    <div class="flex items-center justify-between gap-3 overflow-x-auto pb-2 border-b border-slate-800 text-xs no-scrollbar">
+      <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px] whitespace-nowrap">Gruppenfilter:</span>
+      <div id="filterContainer" class="flex items-center gap-1.5 flex-nowrap">
+        <!-- Injected via JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <main class="flex-1 max-w-[1700px] w-full mx-auto p-4 sm:p-6 flex flex-col justify-center">
+    
+    <!-- Helper Hint on Mobile -->
+    <div class="lg:hidden text-center text-[11px] text-slate-400 mb-2 flex items-center justify-center gap-1">
+      <svg class="w-3.5 h-3.5 animate-pulse text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+      </svg>
+      <span>Tipp: Tabelle horizontal wischen zum Erkunden</span>
+    </div>
+
+    <!-- Scrollable Periodic Grid Wrapper -->
+    <div class="overflow-x-auto pb-6 pt-2 rounded-2xl bg-slate-950/40 border border-slate-800/60 p-3 sm:p-5 shadow-2xl backdrop-blur-sm">
+      
+      <!-- Main Grid: 18 Columns x 5 Rows -->
+      <div id="mainTableGrid" class="grid grid-cols-18 gap-2 min-w-[1240px]" style="grid-template-columns: repeat(18, minmax(64px, 1fr));">
+        <!-- Elements 0 to 34 + The Telegram Continuum Gap will be generated here -->
+      </div>
+
+      <!-- Divider / Explanation between main grid and separate blocks -->
+      <div class="my-5 border-t border-dashed border-slate-800/80 flex items-center justify-between text-[11px] text-slate-500 font-mono-code px-2">
+        <span>* ABGETRENNTE ESOTERISCHE ZUSATZREIHEN (ANOMALIEN UND HOCHGIFTIGE DISKUSSIONSSTOFFE)</span>
+        <span>STAND: VOR STUDIEN-ZENSUR</span>
+      </div>
+
+      <!-- Separate Rows: Lanthanoid-artige (Esoterische Erden) & Transurane -->
+      <div class="space-y-2 min-w-[1240px]">
+        <!-- Esoterische Erden (* Row) -->
+        <div class="flex items-center gap-2">
+          <div class="w-[136px] flex-shrink-0 text-right pr-2">
+            <span class="text-[11px] font-bold text-pink-400 uppercase tracking-wider font-mono-code">* Esoterische Erden</span>
+            <div class="text-[9px] text-slate-500">Sanft und kostspielig</div>
+          </div>
+          <div id="lanthanoidRow" class="grid grid-cols-8 gap-2 flex-1 max-w-[560px]">
+            <!-- Injected via JS -->
+          </div>
+        </div>
+
+        <!-- Schwurbler-Transurane (** Row) -->
+        <div class="flex items-center gap-2">
+          <div class="w-[136px] flex-shrink-0 text-right pr-2">
+            <span class="text-[11px] font-bold text-lime-400 uppercase tracking-wider font-mono-code">** Transurane (90+)</span>
+            <div class="text-[9px] text-slate-500">Telegram-Laborsynthese</div>
+          </div>
+          <div id="transuranRow" class="grid grid-cols-7 gap-2 flex-1 max-w-[490px]">
+            <!-- Injected via JS -->
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Modal: Element Sicherheitsdatenblatt (MSDS) -->
+  <div id="elementModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm transition-opacity">
+    <div id="modalBackdrop" class="absolute inset-0"></div>
+    <div class="relative bg-slate-900 border border-slate-700/80 rounded-2xl w-full max-w-xl shadow-2xl overflow-hidden transform transition-all z-10 flex flex-col max-h-[90vh]">
+      
+      <!-- Modal Header with Element Color Banner -->
+      <div id="modalHeaderBg" class="p-6 border-b border-slate-800 relative bg-gradient-to-r from-slate-800 to-slate-900">
+        <button id="closeModalBtn" class="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-lg bg-slate-950/40 hover:bg-slate-800 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+
+        <div class="flex items-center gap-5">
+          <!-- Big Box Display -->
+          <div id="modalTileBox" class="w-24 h-24 rounded-2xl border-2 flex flex-col justify-between p-2.5 font-mono-code shadow-xl flex-shrink-0 bg-slate-950">
+            <div class="flex justify-between items-start text-xs font-bold text-slate-400">
+              <span id="modalAtomicNumber">0</span>
+              <span id="modalValenz" class="text-[10px]">1s²</span>
+            </div>
+            <div id="modalSymbol" class="text-3xl font-black text-center tracking-tight my-auto">AE</div>
+            <div id="modalAtomicMass" class="text-[9px] text-center text-slate-400 truncate">0.000 g</div>
+          </div>
+
+          <!-- Titles -->
+          <div>
+            <div class="flex items-center gap-2">
+              <span id="modalCategoryBadge" class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border">Gruppe</span>
+              <span id="modalHazardLevel" class="text-[10px] font-bold text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded-full border border-amber-400/30">Gefahrenstufe: Hoch</span>
+            </div>
+            <h2 id="modalElementName" class="text-2xl font-black text-white mt-1">Äther</h2>
+            <p id="modalLatinName" class="text-xs text-slate-400 italic">Substantia Imaginaria Universalis</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Body (MSDS Info) -->
+      <div class="p-6 overflow-y-auto space-y-4 text-sm text-slate-300 flex-1">
+        
+        <!-- Eigenschaft & Verhaltensbiologie -->
+        <div>
+          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5 flex items-center gap-1.5">
+            <span>🔬</span> Chemisch-Soziologisches Profil
+          </h3>
+          <p id="modalDescription" class="bg-slate-950/60 p-3.5 rounded-xl border border-slate-800/80 leading-relaxed text-slate-200">
+            Beschreibung folgt...
+          </p>
+        </div>
+
+        <!-- Gefahrenpiktogramme (Satirische GHS-Warnungen) -->
+        <div>
+          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2 flex items-center gap-1.5">
+            <span>⚠️</span> Gefahren-Einstufung (GHS-Schwurbel)
+          </h3>
+          <div id="modalGhsIcons" class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+            <!-- Injected via JS -->
+          </div>
+        </div>
+
+        <!-- Labor-Parameter Grid -->
+        <div class="grid grid-cols-2 gap-3 text-xs">
+          <div class="p-3 bg-slate-950/40 rounded-xl border border-slate-800">
+            <span class="text-slate-500 block text-[10px] uppercase font-mono-code">Aggregatzustand</span>
+            <span id="modalState" class="font-semibold text-slate-200">Rein imaginär</span>
+          </div>
+          <div class="p-3 bg-slate-950/40 rounded-xl border border-slate-800">
+            <span class="text-slate-500 block text-[10px] uppercase font-mono-code">Typische Halbwertszeit</span>
+            <span id="modalHalftime" class="font-semibold text-slate-200">Bis zur nächsten Studie</span>
+          </div>
+          <div class="p-3 bg-slate-950/40 rounded-xl border border-slate-800">
+            <span class="text-slate-500 block text-[10px] uppercase font-mono-code">Typische Verbindung</span>
+            <span id="modalCompound" class="font-mono-code font-bold text-cyan-400">AE · 3 H₂O</span>
+          </div>
+          <div class="p-3 bg-slate-950/40 rounded-xl border border-slate-800">
+            <span class="text-slate-500 block text-[10px] uppercase font-mono-code">Marktwert (Telegram-Shop)</span>
+            <span id="modalPrice" class="font-bold text-amber-400">499,00 € / Sitzung</span>
+          </div>
+        </div>
+
+        <!-- Satirisches Zitat -->
+        <div class="border-l-2 border-amber-500/60 pl-3 py-1 italic text-xs text-slate-400 bg-amber-500/5 rounded-r-lg">
+          <span id="modalQuote">„Das hat die Tante meiner Freundin auch genommen!“</span>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="p-4 bg-slate-950 border-t border-slate-800 flex items-center justify-between gap-3">
+        <span class="text-[11px] text-slate-500 font-mono-code">Sicherheitsdatenblatt rev. 2026.09</span>
+        <div class="flex gap-2">
+          <button id="copyElementBtn" class="px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-200 font-medium transition-colors flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
+            </svg>
+            <span id="copyBtnText">Zitieren</span>
+          </button>
+          <button id="addSynthesizerBtn" class="px-3.5 py-1.5 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold transition-colors flex items-center gap-1">
+            <span>⚗️</span> In Mixer legen
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Modal: Schwurbel-Mischer (Molekül-Baukasten) -->
+  <div id="labModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+    <div id="labBackdrop" class="absolute inset-0"></div>
+    <div class="relative bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden z-10 flex flex-col max-h-[90vh]">
+      
+      <!-- Lab Header -->
+      <div class="p-5 border-b border-slate-800 bg-slate-950 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 to-rose-500 flex items-center justify-center text-slate-950 font-bold text-lg">
+            ⚗️
+          </div>
+          <div>
+            <h2 class="text-lg font-bold text-white">Das Esoterik-Reaktionslabor</h2>
+            <p class="text-xs text-slate-400">Kreiere marktreife Schwurbler-Moleküle für Telegram-Vertriebspartner</p>
+          </div>
+        </div>
+        <button id="closeLabBtn" class="text-slate-400 hover:text-white p-1 rounded-lg">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- Lab Body -->
+      <div class="p-6 overflow-y-auto space-y-6 flex-1 text-sm">
+        
+        <!-- Slot Selector -->
+        <div>
+          <label class="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-2">Reaktanten auswählen (Max. 3 Elemente):</label>
+          <div class="grid grid-cols-3 gap-3">
+            <div id="slot0" class="border-2 border-dashed border-slate-700 rounded-xl p-3 flex flex-col items-center justify-center min-h-[90px] bg-slate-950/50">
+              <span class="text-xs text-slate-500">Reaktant 1</span>
+            </div>
+            <div id="slot1" class="border-2 border-dashed border-slate-700 rounded-xl p-3 flex flex-col items-center justify-center min-h-[90px] bg-slate-950/50">
+              <span class="text-xs text-slate-500">Reaktant 2</span>
+            </div>
+            <div id="slot2" class="border-2 border-dashed border-slate-700 rounded-xl p-3 flex flex-col items-center justify-center min-h-[90px] bg-slate-950/50">
+              <span class="text-xs text-slate-500">Reaktant 3 (optional)</span>
+            </div>
+          </div>
+          <div class="flex justify-end mt-2">
+            <button id="clearSlotsBtn" class="text-xs text-rose-400 hover:text-rose-300 underline font-medium">Reagenzgläser leeren</button>
+          </div>
+        </div>
+
+        <!-- Element Quick-Pick Chips -->
+        <div>
+          <span class="text-xs font-semibold text-slate-400 block mb-2">Beliebte Katalysatoren schnell hinzufügen:</span>
+          <div id="labChipContainer" class="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto p-1 bg-slate-950/40 rounded-xl border border-slate-800">
+            <!-- Chips via JS -->
+          </div>
+        </div>
+
+        <!-- Synthesize Action Button -->
+        <button id="synthesizeBtn" class="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 via-rose-500 to-cyan-400 hover:opacity-90 font-black text-slate-950 text-base shadow-lg shadow-rose-500/20 transition-all flex items-center justify-center gap-2">
+          <span>💥 Feinstofflich Verwirbeln und Synthetisieren</span>
+        </button>
+
+        <!-- Result Box -->
+        <div id="synthesisResult" class="hidden p-5 rounded-xl bg-slate-950 border border-amber-500/40 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono-code font-bold text-amber-400 uppercase tracking-wider">Ergebnis der Verschüttelung:</span>
+            <span id="resFormula" class="text-xs font-mono-code bg-slate-900 border border-slate-700 px-2 py-0.5 rounded text-cyan-300">Qn · Gb₂</span>
+          </div>
+          <h3 id="resName" class="text-xl font-black text-white">Quanten-Globulit-Mondelixier 4000</h3>
+          <p id="resSlogan" class="text-xs text-slate-300 leading-relaxed">Entstört die Aura auf Zellebene und leert diskret das Bankkonto über die 5G-Frequenz.</p>
+          <div class="pt-2 border-t border-slate-800 flex items-center justify-between text-xs">
+            <span class="text-slate-400">Empfohlener Telegram-UVP:</span>
+            <span id="resPrice" class="font-bold text-emerald-400 text-sm">849,00 € (Netto)</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Modal: Das Dunkle Telegram-Kontinuum (Schwarzes Loch) -->
+  <div id="continuumModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+    <div id="continuumBackdrop" class="absolute inset-0"></div>
+    <div class="relative bg-slate-950 border border-yellow-500/50 rounded-2xl w-full max-w-xl shadow-[0_0_50px_rgba(234,179,8,0.2)] overflow-hidden z-10 flex flex-col max-h-[90vh]">
+      
+      <!-- Black Hole Cosmic Header -->
+      <div class="p-6 border-b border-yellow-500/30 relative bg-gradient-to-b from-yellow-950/40 via-slate-950 to-slate-950 flex items-center gap-4">
+        <button id="closeContinuumBtn" class="absolute top-4 right-4 text-slate-400 hover:text-white p-1.5 rounded-lg bg-slate-900 border border-slate-800">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+
+        <div class="relative flex items-center justify-center w-20 h-20 flex-shrink-0">
+          <!-- Swirling accretion disk visual -->
+          <div class="absolute inset-0 rounded-full bg-gradient-to-tr from-yellow-500 via-amber-600 to-rose-600 blur-md opacity-70 animate-spin" style="animation-duration: 9s;"></div>
+          <div class="relative w-16 h-16 rounded-full bg-black border-2 border-yellow-400/80 flex items-center justify-center text-4xl shadow-inner">
+            <span>🕳️</span>
+          </div>
+        </div>
+
+        <div>
+          <div class="inline-block text-[10px] font-bold font-mono-code uppercase px-2 py-0.5 rounded-full bg-yellow-500/20 text-yellow-300 border border-yellow-500/40 mb-1">
+            Singularität erkannt
+          </div>
+          <h2 class="text-xl sm:text-2xl font-black text-white">Das Dunkle Telegram-Kontinuum</h2>
+          <p class="text-xs font-mono-code text-yellow-400/80">Lücke der Ordnungszahlen 35 bis 89</p>
+        </div>
+      </div>
+
+      <!-- Continuum Modal Body -->
+      <div class="p-6 overflow-y-auto space-y-4 text-sm text-slate-300">
+        
+        <div class="p-4 rounded-xl bg-yellow-500/5 border border-yellow-500/20 leading-relaxed">
+          <p class="text-slate-200 font-medium mb-2">
+            Sie blicken direkt in das <strong class="text-yellow-300">Vakuum des gesunden Menschenverstands</strong>.
+          </p>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            In diesem Bereich kollabiert jegliche empirische Logik in eine unendliche Singularität aus unbelegten Thesen, dreistündigen Sprachnachrichten und dubiosen PDF-Flyern. Keine wissenschaftliche Kontrollgruppe kann dem Gravitationsfeld dieses Raumes entkommen.
+          </p>
+        </div>
+
+        <!-- Astrophysisch-esoterische Parameter -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-mono-code">
+          <div class="p-3 bg-slate-900/90 rounded-xl border border-slate-800">
+            <span class="text-slate-500 text-[10px] uppercase block">Ereignishorizont</span>
+            <span class="font-bold text-yellow-400">„Informier dich doch mal selbst!“</span>
+          </div>
+          <div class="p-3 bg-slate-900/90 rounded-xl border border-slate-800">
+            <span class="text-slate-500 text-[10px] uppercase block">Gravitationskraft</span>
+            <span class="font-bold text-yellow-400">Zieht jedes Argument ins Leere</span>
+          </div>
+          <div class="p-3 bg-slate-900/90 rounded-xl border border-slate-800">
+            <span class="text-slate-500 text-[10px] uppercase block">Dichte der Singularität</span>
+            <span class="font-bold text-yellow-400">Unendliche Ausrufezeichen bei 0 g Substanz</span>
+          </div>
+          <div class="p-3 bg-slate-900/90 rounded-xl border border-slate-800">
+            <span class="text-slate-500 text-[10px] uppercase block">Schutzmaßnahme</span>
+            <span class="font-bold text-yellow-400">Mit Orgonit und Alufolie meiden</span>
+          </div>
+        </div>
+
+        <div class="p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-xs italic text-slate-400 flex items-center gap-2">
+          <span class="text-lg">🔭</span>
+          <span>„Wer hier zu lange hineinstarrt, gründet unweigerlich einen eigenen Vertrieb für verwirbeltes Quellwasser.“</span>
+        </div>
+
+      </div>
+
+      <div class="p-4 bg-slate-900 border-t border-slate-800 flex justify-end">
+        <button id="dismissContinuumBtn" class="px-4 py-2 rounded-xl bg-yellow-500 hover:bg-yellow-400 text-slate-950 font-bold text-xs transition-colors">
+          Ereignishorizont verlassen
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Modal: Schwurbel'sches Wirkungsgesetz & Simulator -->
+  <div id="formulaModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+    <div id="formulaBackdrop" class="absolute inset-0"></div>
+    <div class="relative bg-slate-950 border border-amber-500/40 rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden z-10 flex flex-col max-h-[92vh]">
+      
+      <!-- Formula Header -->
+      <div class="p-5 border-b border-slate-800 bg-slate-900 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-400 to-orange-500 flex items-center justify-center text-slate-950 font-black text-xl shadow-md shadow-amber-500/20">
+            📐
+          </div>
+          <div>
+            <h2 class="text-lg font-bold text-white">Das Schwurbel'sche Wirkungsgesetz</h2>
+            <p class="text-xs text-slate-400">Grundaxiom der feinstofflichen Wirksamkeitsmathematik</p>
+          </div>
+        </div>
+        <button id="closeFormulaBtn" class="text-slate-400 hover:text-white p-1 rounded-lg">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- Formula Body -->
+      <div class="p-6 overflow-y-auto space-y-6 flex-1 text-sm">
+        
+        <!-- The Law Equation Display Box -->
+        <div class="p-5 rounded-2xl bg-gradient-to-br from-slate-900 via-slate-900/90 to-amber-950/20 border border-amber-500/30 text-center shadow-lg">
+          <div class="text-[11px] uppercase tracking-wider text-amber-400 font-mono-code font-bold mb-3">
+            Offizielle universelle Gleichung der Heilkraft (W)
+          </div>
+          
+          <div class="inline-block font-mono-code text-slate-100 text-sm sm:text-base bg-slate-950/90 px-6 py-4 rounded-xl border border-slate-800 shadow-inner">
+            <div class="text-amber-300 font-bold tracking-wider mb-1 flex items-center justify-center gap-2">
+              <span>W = </span>
+              <span class="text-cyan-300">( ⭐⭐⭐⭐⭐ × Gefühle² × Testimonials × !ⁿ )</span>
+            </div>
+            <div class="w-full border-t-2 border-amber-400/80 my-1.5"></div>
+            <div class="text-rose-400 font-semibold tracking-wider">
+              ( Peer-Review + Statistik + Kontrollgruppe )
+            </div>
+          </div>
+
+          <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2 text-left text-xs text-slate-300 pt-3 border-t border-slate-800/80">
+            <div class="flex items-start gap-2">
+              <span class="text-emerald-400 font-bold">↗</span>
+              <span><strong>Direkt proportional:</strong> Ausrufezeichen (!), emotionale Heul-Emojis und Tanten-Berichte treiben $W$ ins Unendliche.</span>
+            </div>
+            <div class="flex items-start gap-2">
+              <span class="text-rose-400 font-bold">↘</span>
+              <span><strong>Umgekehrt proportional:</strong> Jede veröffentlichte saubere Studie im Nenner lässt die Wirksamkeit sofort gegen 0 crashen.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive Wirksamkeits-Simulator -->
+        <div class="bg-slate-900/80 p-5 rounded-2xl border border-slate-800 space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono-code flex items-center gap-1.5">
+              <span>🧮</span> Live-Wirksamkeits-Rechner
+            </h3>
+            <span class="text-[10px] text-slate-400">Verändere die Parameter:</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+            <!-- Slider 1: Gefühle -->
+            <div>
+              <div class="flex justify-between font-medium mb-1 text-slate-300">
+                <span>😭 Gefühls-Drama:</span>
+                <span id="valGefuehle" class="font-mono-code text-cyan-400 font-bold">8 / 10</span>
+              </div>
+              <input id="sliderGefuehle" type="range" min="1" max="10" value="8" class="w-full accent-cyan-400 cursor-pointer">
+            </div>
+
+            <!-- Slider 2: Ausrufezeichen -->
+            <div>
+              <div class="flex justify-between font-medium mb-1 text-slate-300">
+                <span>❗ Ausrufezeichen-Anzahl (!ⁿ):</span>
+                <span id="valExclamation" class="font-mono-code text-cyan-400 font-bold">5 Stück</span>
+              </div>
+              <input id="sliderExclamation" type="range" min="1" max="12" value="5" class="w-full accent-cyan-400 cursor-pointer">
+            </div>
+
+            <!-- Slider 3: Testimonials -->
+            <div>
+              <div class="flex justify-between font-medium mb-1 text-slate-300">
+                <span>👵 Tanten-Testimonials:</span>
+                <span id="valTestimonials" class="font-mono-code text-cyan-400 font-bold">6 Berichte</span>
+              </div>
+              <input id="sliderTestimonials" type="range" min="1" max="15" value="6" class="w-full accent-cyan-400 cursor-pointer">
+            </div>
+
+            <!-- Slider 4: Studien / Peer Review (The Nenner Killer) -->
+            <div>
+              <div class="flex justify-between font-medium mb-1 text-rose-300">
+                <span>📑 Kontrollierte Studien (Nenner):</span>
+                <span id="valStudies" class="font-mono-code text-rose-400 font-bold">0 (Idealzustand)</span>
+              </div>
+              <input id="sliderStudies" type="range" min="0" max="10" value="0" class="w-full accent-rose-500 cursor-pointer">
+            </div>
+          </div>
+
+          <!-- Result output -->
+          <div class="p-4 rounded-xl bg-slate-950 border border-amber-500/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3 mt-4">
+            <div>
+              <span class="text-[10px] uppercase font-mono-code text-slate-400 block">Errechneter Wirkungsgrad (W):</span>
+              <div id="resultScore" class="text-2xl font-black font-mono-code text-amber-300">
+                ∞ (Maximal Wunderheilsam)
+              </div>
+              <p id="resultDiagnosis" class="text-xs text-slate-300 mt-0.5">
+                Perfekt! Keine einzige Studie verdirbt das Gefühl. Bestseller im Telegram-Shop garantiert!
+              </p>
+            </div>
+            <button id="calcAudioBtn" class="flex-shrink-0 px-3 py-2 rounded-lg bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 border border-amber-500/40 text-xs font-semibold font-mono-code transition-colors flex items-center gap-1.5">
+              <span>🔔</span> Schwingung testen
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Toast Feedback -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 hidden bg-slate-900 border border-cyan-500/50 text-cyan-300 px-4 py-2.5 rounded-xl shadow-2xl text-xs font-medium flex items-center gap-2">
+    <span>✓</span>
+    <span id="toastMsg">In Zwischenablage kopiert!</span>
+  </div>
+
+  <script>
+    /* Audio Synthesizer (Pure Web Audio API - no external assets) */
+    class EsotericSynth {
+      constructor() {
+        this.ctx = null;
+        this.enabled = true;
+      }
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioContext();
+        }
+        if (this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+      playChime(freq = 432, duration = 0.6) {
+        if (!this.enabled) return;
+        try {
+          this.init();
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+          
+          // Natural singing bowl bell envelope
+          gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+          
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + duration);
+        } catch (e) {
+          console.warn("Audio Context blocked or unsupported");
+        }
+      }
+    }
+    const synth = new EsotericSynth();
+
+    const GROUPS = {
+      urstoff: { id: 'urstoff', name: 'Urstoff', color: '#38bdf8', bg: 'bg-sky-500/10', border: 'border-sky-500/40', text: 'text-sky-300' },
+      affekt: { id: 'affekt', name: 'Affekt-Metalle', color: '#f87171', bg: 'bg-red-500/10', border: 'border-red-500/40', text: 'text-red-400' },
+      erdung: { id: 'erdung', name: 'Erdungs- und Kristallmetalle', color: '#34d399', bg: 'bg-emerald-500/10', border: 'border-emerald-500/40', text: 'text-emerald-400' },
+      schwingung: { id: 'schwingung', name: 'Fluid- und Schwingungen', color: '#818cf8', bg: 'bg-indigo-500/10', border: 'border-indigo-500/40', text: 'text-indigo-400' },
+      halogene: { id: 'halogene', name: 'Halogene des Zweifels', color: '#c084fc', bg: 'bg-purple-500/10', border: 'border-purple-500/40', text: 'text-purple-400' },
+      edel: { id: 'edel', name: 'Edel-Ignoranten', color: '#fbbf24', bg: 'bg-amber-500/10', border: 'border-amber-500/40', text: 'text-amber-400' },
+      lanthanoid: { id: 'lanthanoid', name: 'Esoterische Erden', color: '#f472b6', bg: 'bg-pink-500/10', border: 'border-pink-500/40', text: 'text-pink-400' },
+      transuran: { id: 'transuran', name: 'Schwurbler-Transurane', color: '#a3e635', bg: 'bg-lime-500/10', border: 'border-lime-500/40', text: 'text-lime-400' }
+    };
+
+    const ELEMENTS = [
+      {
+        nr: 0,
+        sym: 'AE',
+        name: 'Äther',
+        latin: 'Substantia Imaginaria',
+        group: 'urstoff',
+        mass: '0.000 g',
+        freq: 528,
+        col: 9, row: 1,
+        prop: 'Existiert nur, wenn man ganz fest daran glaubt. Dient als allgegenwärtiges Trägermedium für freie Energien, Flüche und Telegram-Bots.',
+        hazards: ['🔥 Reaktiv bei Vernunft', '🌀 Vakuum-Anomalie', '💸 Hohe Seminargebühren'],
+        state: 'Rein imaginär',
+        halftime: 'Ewig (solange Spenden fließen)',
+        compound: 'AE · ∞ (Vollspektrum)',
+        price: 'Unbezahlbar (Spende erbeten)',
+        quote: '„Das wusste schon Nikola Tesla, aber die Eliten halten es geheim!“'
+      },
+      {
+        nr: 1,
+        sym: 'WGt',
+        name: 'Wassergrandt',
+        latin: 'Aqua Memoriosa',
+        group: 'affekt',
+        mass: '1.008 g',
+        freq: 432,
+        col: 1, row: 2,
+        prop: 'Merkt sich alles, was jemals mit ihm in Berührung kam – vergisst aber bei der ersten wissenschaftlichen Doppelblindstudie sofort den eigenen Namen.',
+        hazards: ['🧠 Löscht Gedächtnis für Kontrollgruppen', '💧 Teuer verwirbelt'],
+        state: 'Flüssig (belebt)',
+        halftime: '3 Schlucke',
+        compound: 'WGt · 2 Mw (Mondwasser-Lösung)',
+        price: '1.890 € pro Einbau-Hahn',
+        quote: '„Mein Leitungswasser war vorher total traurig und unstrukturiert.“'
+      },
+      {
+        nr: 2,
+        sym: 'Qn',
+        name: 'Quantenium',
+        latin: 'Quantus Arbitrarius',
+        group: 'schwingung',
+        mass: '4.002 g',
+        freq: 639,
+        col: 13, row: 2,
+        prop: 'Wird vor jedes beliebige Substantiv gehängt (Quanten-Yoga, Quanten-Wasser, Quanten-Steuer), um es um das Zehnfache im Preis zu steigern.',
+        hazards: ['⚛️ Unschärferelation im Geldbeutel', '🤯 Verwirrt Physiker'],
+        state: 'Superposition (gleichzeitig wahr und Unsinn)',
+        halftime: 'Bis Heisenberg weint',
+        compound: 'Qn(Gb)₂',
+        price: '450 € / Online-Webinar',
+        quote: '„Wer die Quantenphysik versteht, hat sie nicht verstanden – ich biete dazu Coaching an.“'
+      },
+      {
+        nr: 3,
+        sym: 'Fr',
+        name: 'Frequenzon',
+        latin: 'Oscillatio Perpetua',
+        group: 'edel',
+        mass: '6.941 g',
+        freq: 741,
+        col: 18, row: 1,
+        prop: 'Schwingt halt… warum? Na weil! Besitzt eine vollständig geschlossene Schwingungshülle. Geht keinerlei Wechselwirkung mit Logik ein.',
+        hazards: ['📻 Akustische Trommelfell-Belastung', '📴 Schwingt grundlos'],
+        state: 'Feinstofflich oszillierend',
+        halftime: '432 Hertz ununterbrochen',
+        compound: 'Fr · Ks (Klangschalen-Komplex)',
+        price: '120 € pro Stimmgabel',
+        quote: '„Du musst deine Schwingung erhöhen, sonst matchst du nicht mit dem Universum.“'
+      },
+      {
+        nr: 4,
+        sym: 'Eg',
+        name: 'Entgiftium',
+        latin: 'Detoxicum Absurdum',
+        group: 'affekt',
+        mass: '9.012 g',
+        freq: 396,
+        col: 1, row: 3,
+        prop: 'Entfernt mystische, im Labor nie definierbare Schlacken aus Geweben, die biologisch gar keine Schlacken enthalten.',
+        hazards: ['🚽 Fördert Diarrhö und Umsatz', '🧪 Verätzt gesunden Menschenverstand'],
+        state: 'Pulvrig / Grüner Smoothie',
+        halftime: '3 Tage Heilfasten',
+        compound: 'Eg · Dx (Detox-Konzentrat)',
+        price: '79,90 € pro 100g Bio-Mischung',
+        quote: '„Das braune Zeug im Fußbad sind keine Rostpartikel der Elektroden, das sind die Gifte deiner Seele!“'
+      },
+      {
+        nr: 5,
+        sym: 'Ck',
+        name: 'Chakron',
+        latin: 'Chacra Septima',
+        group: 'schwingung',
+        mass: '10.81 g',
+        freq: 852,
+        col: 14, row: 2,
+        prop: 'Besitzt exakt 7 Valenzschalen. Verstopft bevorzugt bei unverarbeiteter Wut auf den Vermieter oder ungünstigem Merkurstand.',
+        hazards: ['🌈 Regenbogen-Blockade', '🧘 Sitzbeschwerden'],
+        state: 'Aural verdichtet',
+        halftime: 'Bis zur nächsten Trommelsession',
+        compound: 'Ck(Om)₇',
+        price: '90 € / Stunde Meridian-Öffnung',
+        quote: '„Dein Wurzelchakra ist total verkantet, da müssen wir mit warmem Bernstein ran.“'
+      },
+      {
+        nr: 6,
+        sym: 'Rz',
+        name: 'Resonanzium',
+        latin: 'Resonantia Nummaria',
+        group: 'schwingung',
+        mass: '12.01 g',
+        freq: 417,
+        col: 15, row: 2,
+        prop: 'Resoniert mit allem im Kosmos – allerdings mit Abstand am stärksten mit NFC-Kartenlesegeräten und Lastschriftmandaten.',
+        hazards: ['💳 Plötzliche Kontoschwäche', '📡 Empfängt universelle Wünsche'],
+        state: 'Hochgradig anziehend',
+        halftime: '30 Tage Widerrufsfrist',
+        compound: 'Rz · Bm',
+        price: '299 € Monats-Abo',
+        quote: '„Das Gesetz der Anziehung bringt dir Geld – zuerst aber mal mir.“'
+      },
+      {
+        nr: 7,
+        sym: 'Mx',
+        name: 'Matrixit',
+        latin: 'Realitas Inversa',
+        group: 'schwingung',
+        mass: '14.00 g',
+        freq: 963,
+        col: 16, row: 2,
+        prop: 'Das Mineral der Wahrheit hinter der Wahrheit, die nochmals hinter der eigentlichen Wahrheit liegt. Unantastbar gegen empirische Widerlegung.',
+        hazards: ['🕶️ Rote-Pillen-Intoxikation', '🐇 Kaninchenbau-Syndrom'],
+        state: 'Kristallines Meta-Gitter',
+        halftime: 'Bis zum nächsten Systemabsturz',
+        compound: 'Mx · Ds (DeepState-Gitter)',
+        price: 'Kostenlos im Telegram-Kanal',
+        quote: '„Wach endlich auf, du Schlafschaaf!“'
+      },
+      {
+        nr: 8,
+        sym: 'Bp',
+        name: 'Biophoton',
+        latin: 'Lux Seminarsis',
+        group: 'edel',
+        mass: '15.99 g',
+        freq: 580,
+        col: 18, row: 2,
+        prop: 'Sendet feinstoffliche Lichtblitze aus – kurioserweise ausschließlich in abgedunkelten Seminarräumen von Heilpraktiker-Wochenenden.',
+        hazards: ['💡 Spontane Erleuchtung (kostspielig)', '🪙 Blendgefahr'],
+        state: 'Fluoreszierend bei Barzahlung',
+        halftime: 'Dauer des Wochenend-Workshops',
+        compound: 'Bp · Pa',
+        price: '680 € zzgl. MwSt.',
+        quote: '„Ihre Zellen kommunizieren über Laserstrahlen der Liebe.“'
+      },
+      {
+        nr: 9,
+        sym: 'Gb',
+        name: 'Globulium',
+        latin: 'Saccharosum Potentiatum',
+        group: 'schwingung',
+        mass: '18.99 g',
+        freq: 520,
+        col: 17, row: 2,
+        prop: 'Die unteilbare Ureinheit der Alternativmedizin. Je weniger Materie davon vorhanden ist, desto brutaler soll die hypothetische Potenz einschlagen.',
+        hazards: ['🍬 Kariesgefahr bei C200', '💧 Verschüttelungstrauma'],
+        state: 'Fest (100% Haushaltszucker)',
+        halftime: 'Haltbar bis nach dem Verstand',
+        compound: 'Gb · C200 (reines Nichts)',
+        price: '14,50 € für 10g Rohrzucker',
+        quote: '„Erstverschlimmerung ist ein ganz klares Zeichen der Wirksamkeit!“'
+      },
+      {
+        nr: 10,
+        sym: 'CuA',
+        name: 'Kupferarmbandium',
+        latin: 'Cuprum Articulare',
+        group: 'erdung',
+        mass: '20.18 g',
+        freq: 330,
+        col: 2, row: 2,
+        prop: 'Schützt zuverlässig vor Erdstrahlen, 4G, Wasseradern und Gelenksteife. Oxidiert leider doppelt so schnell wie die eigene Argumentationskette.',
+        hazards: ['🟢 Grün verfärbte Handgelenke', '⚡ Placebo-Entladung'],
+        state: 'Metallisch glänzend',
+        halftime: '3 Wochen bis zur Grünspan-Bildung',
+        compound: 'CuA · Mh',
+        price: '49,90 € im Reformhaus',
+        quote: '„Kupfer zieht die bösen Magnetfelder aus den Knochen.“'
+      },
+      {
+        nr: 11,
+        sym: 'Mh',
+        name: 'Magnetit-Harmonicus',
+        latin: 'Ferrum Polarisatum',
+        group: 'erdung',
+        mass: '22.99 g',
+        freq: 380,
+        col: 2, row: 3,
+        prop: 'Polt chaotische feinstoffliche Turbulenzen im Schlafzimmer so um, dass sie exakt in Richtung der Kontoverbindung des Herstellers fließen.',
+        hazards: ['🧲 Zieht Münzen magisch an', '🧭 Verwirrt Wanderkompasse'],
+        state: 'Sintermetall mit Goldprägung',
+        halftime: 'Garantiert 10 Jahre Wirkung',
+        compound: 'Mh · CuA',
+        price: '289 € für die Bettauflage',
+        quote: '„Sie schlafen wie ein Neugeborenes – wenn Sie erst überwiesen haben.“'
+      },
+      {
+        nr: 12,
+        sym: 'Or',
+        name: 'Orgonium',
+        latin: 'Gas Reichianum',
+        group: 'lanthanoid',
+        mass: '24.30 g',
+        freq: 460,
+        col: 3, row: 7,
+        prop: 'Reich’sches Urgas. Sammelt sich am liebsten in Kisten aus Schafwolle, Harz und Altmetall. Vertreibt zuverlässig Regenwolken und Skepsis.',
+        hazards: ['☁️ Wolkenbruchgefahr', '🧰 Kisten-Klaustrophobie'],
+        state: 'Akkumuliert in Pyramidenform',
+        halftime: 'Bis der Nachbar das Ordnungsamt ruft',
+        compound: 'Or · Ct (Cloudbuster-Aktivator)',
+        price: '1.200 € für den Garten-Chembuster',
+        quote: '„Mein Orgon-Strahler hat gestern eigenhändig drei Chemtrails aufgelöst.“'
+      },
+      {
+        nr: 13,
+        sym: 'Mw',
+        name: 'Mondwasserat',
+        latin: 'Aqua Lunatica',
+        group: 'lanthanoid',
+        mass: '26.98 g',
+        freq: 415,
+        col: 4, row: 7,
+        prop: 'Stinknormales Leitungswasser, das über Nacht auf dem Balkon stand und durch Photonenabwesenheit eine Wertsteigerung von 400 % erfährt.',
+        hazards: ['🐺 Heuldrang bei Nacht', '💸 Teure Glasflasche'],
+        state: 'Flüssig, kaltgestellt',
+        halftime: '28 Tage Mondzyklus',
+        compound: 'Mw · Vm',
+        price: '18,50 € pro 0,5 Liter',
+        quote: '„Man schmeckt sofort, dass da kein Sonnenlicht dran war.“'
+      },
+      {
+        nr: 14,
+        sym: 'Vm',
+        name: 'Vollmondit',
+        latin: 'Somnus Lunaris',
+        group: 'lanthanoid',
+        mass: '28.08 g',
+        freq: 410,
+        col: 5, row: 7,
+        prop: 'Katalysiert zuverlässig Schlaflosigkeit, Gereiztheit im Büro, Parkrempler und faule Ausreden für jede denkbare zwischenmenschliche Panne.',
+        hazards: ['🥱 Müdigkeit am Montagmorgen', '🌕 Scheinbare Kausalität'],
+        state: 'Psychosomatisch kristallisiert',
+        halftime: 'Genau 24 Stunden pro Monat',
+        compound: 'Vm · Mw',
+        price: 'Gratis als Entschuldigung',
+        quote: '„Ich bin heute so zickig, weil der Mond in den Fischen steht.“'
+      },
+      {
+        nr: 15,
+        sym: 'Dx',
+        name: 'Detoxium',
+        latin: 'Purgatio Continua',
+        group: 'lanthanoid',
+        mass: '30.97 g',
+        freq: 350,
+        col: 6, row: 7,
+        prop: 'Reinigt mit Vorliebe Organe wie Leber und Nieren, die das seit Jahrmillionen evolutionsbedingt völlig autonom und ohne Algenpulver erledigen.',
+        hazards: ['🥑 Grünkohl-Überdosis', '📉 Mangel an Elektrolyten'],
+        state: 'Chiasamen-Schleim',
+        halftime: '1 Darmspülung',
+        compound: 'Dx · Eg',
+        price: '65 € für das 14-Tage-Kit',
+        quote: '„Man spürt förmlich, wie die bösen Schlacken den Körper verlassen.“'
+      },
+      {
+        nr: 16,
+        sym: 'Si',
+        name: 'SilentInflammat',
+        latin: 'Inflammatio Invisibilis',
+        group: 'lanthanoid',
+        mass: '32.06 g',
+        freq: 490,
+        col: 7, row: 7,
+        prop: 'Die perfekte unsichtbare Entzündung: Kann in keinem Blutbild nachgewiesen werden, ist aber die bequeme Ursache für absolut jedes Wehwehchen.',
+        hazards: ['🔮 Diagnose nur per Tensor/Pendel', '😨 Chronische Krankheitsangst'],
+        state: 'Mikroskopisch eingebildet',
+        halftime: 'Bis zur Kinesiologie-Entwarnung',
+        compound: 'Si · Nt',
+        price: '180 € Heilpraktiker-Pauschale',
+        quote: '„Das ist eine stille Entzündung, darum sieht die Schulmedizin sie nicht!“'
+      },
+      {
+        nr: 17,
+        sym: 'Zt',
+        name: 'Zirbentherin',
+        latin: 'Pinus Alpinus Mirabilis',
+        group: 'lanthanoid',
+        mass: '35.45 g',
+        freq: 512,
+        col: 8, row: 7,
+        prop: 'Holziger Wunderduft aus den Alpen. Senkt angeblich die Herzfrequenz um exakt 3.500 Schläge am Tag und lähmt die wissenschaftliche Urteilskraft.',
+        hazards: ['🪵 Sägespäne im Kissen', '🏔️ Hoher Hütten-Aufschlag'],
+        state: 'Aromatisch verharzt',
+        halftime: 'Bis der Duft nachlässt (2 Wochen)',
+        compound: 'Zt · 3 Späne',
+        price: '149 € für das Schlafkissen',
+        quote: '„Die Zirbe schützt vor Wasseradern und der Steuerprüfung.“'
+      },
+      {
+        nr: 18,
+        sym: 'Nt',
+        name: 'Naturium',
+        latin: 'Dogma Botanicum',
+        group: 'lanthanoid',
+        mass: '39.94 g',
+        freq: 530,
+        col: 9, row: 7,
+        prop: 'Fundamental-Dogma: Alles, was natürlich ist, ist automatisch sanft, heilsam und gut. (Der Grüne Knollenblätterpilz nickt zustimmend im Wald).',
+        hazards: ['🍄 Giftpilz-Blindheit', '🌿 Vergiftung durch Bio-Tee'],
+        state: 'Unbehandelt und heilig',
+        halftime: 'Bis zur Notaufnahme',
+        compound: 'Nt · Nh',
+        price: 'Bio-Zuschlag +250%',
+        quote: '„Chemie ist böse, aber Tollkirsche ist reine Natur!“'
+      },
+      {
+        nr: 19,
+        sym: 'Cp',
+        name: 'Chemophobium',
+        latin: 'Panica Synthetica',
+        group: 'affekt',
+        mass: '39.09 g',
+        freq: 300,
+        col: 1, row: 4,
+        prop: 'Reagiert mit akuter Panik auf das Wort „Chemikalie“. Besteht dabei ironischerweise selbst zu exakt 100 % aus chemischen Elementen.',
+        hazards: ['😱 Atemnot bei E-Nummern', '🔬 Angst vor Dihydrogenmonoxid'],
+        state: 'Hysterisch dissoziiert',
+        halftime: 'Bis zum nächsten Inhaltsstoff-Etikett',
+        compound: 'Cp · Sk',
+        price: 'Kostenlose Panikmache',
+        quote: '„Ich esse nichts, was ich nicht aussprechen kann – zum Beispiel Sauerstoff!“'
+      },
+      {
+        nr: 20,
+        sym: 'Sk',
+        name: 'Studienkriton',
+        latin: 'Dubium Selektivum',
+        group: 'halogene',
+        mass: '40.07 g',
+        freq: 670,
+        col: 17, row: 3,
+        prop: 'Extrem instabil. Fordert lauthals Beweise, zerfällt aber in Sekundenbruchteilen zu Staub, sobald eine methodisch saubere Metaanalyse vorgelegt wird.',
+        hazards: ['📑 Zitiert nur den Abstract', '🙈 Selektive Blindheit'],
+        state: 'Aggressiv gasförmig',
+        halftime: '0,4 Sekunden nach PubMed-Link',
+        compound: 'Sk · Bm',
+        price: 'Verloren in Telegram-Chats',
+        quote: '„Wer hat die Studie finanziert?! Na also!!“'
+      },
+      {
+        nr: 21,
+        sym: 'An',
+        name: 'Anekdotium',
+        latin: 'Evidentia Tantea',
+        group: 'affekt',
+        mass: '44.95 g',
+        freq: 440,
+        col: 1, row: 5,
+        prop: 'Das Element mit der höchsten nachgewiesenen Überzeugungskraft im Schwurbel-Universum: „Also bei meiner Tante Erna hat das sofort geholfen!“',
+        hazards: ['👵 Tanten-Monopol', '📉 Ignoriert n=10.000'],
+        state: 'Kaffee- und kuchentauglich',
+        halftime: 'Wird mit jedem Erzählen potenter',
+        compound: 'An · Gb',
+        price: 'Unbezahlbar am Kaffeetisch',
+        quote: '„Studien sind mir egal, ich habe es doch mit eigenen Augen gesehen!“'
+      },
+      {
+        nr: 22,
+        sym: 'Bm',
+        name: 'BigPharmium',
+        latin: 'Hostis Universalis',
+        group: 'halogene',
+        mass: '47.86 g',
+        freq: 720,
+        col: 17, row: 4,
+        prop: 'Der allgegenwärtige Superschurke. Dient als universeller Katalysator: Wenn etwas nicht wirkt, hat BigPharmium die Frequenz sabotiert.',
+        hazards: ['🤑 Profit-Projektion', '💉 Spritzen-Alpträume'],
+        state: 'Düster konspirativ',
+        halftime: 'Ewig nährendes Feindbild',
+        compound: 'Bm · Iv',
+        price: 'Milliarden (angeblich)',
+        quote: '„Die wollen gar nicht, dass wir gesund werden, sonst verdienen die ja nix!“'
+      },
+      {
+        nr: 23,
+        sym: 'Wl',
+        name: 'WLANium',
+        latin: 'Aether Microondas',
+        group: 'halogene',
+        mass: '50.94 g',
+        freq: 580,
+        col: 16, row: 4,
+        prop: 'Man kann es weder sehen noch riechen noch schmecken, es überträgt aber Netflix – und ist folglich zweifelsfrei hochgradig krebserregend.',
+        hazards: ['📶 Router-Aussteckzwang um 22 Uhr', '🧠 Mikrowellen-Kopfweh'],
+        state: 'Unsichtbar strahlend',
+        halftime: 'Bis das Datenvolumen leer ist',
+        compound: 'Wl · 5G',
+        price: '349 € für den Strahlenschutz-Aufkleber',
+        quote: '„Seit der Nachbar WLAN hat, fault mein Ficus benjamina!“'
+      },
+      {
+        nr: 24,
+        sym: 'Nh',
+        name: 'Naturheilix',
+        latin: 'Marketingus Viridis',
+        group: 'lanthanoid',
+        mass: '51.99 g',
+        freq: 550,
+        col: 10, row: 7,
+        prop: 'Die Heilsamkeit einer Tinktur steigt empirisch exakt mit der Anzahl handgezeichneter grüner Blätter und Schnörkel auf der Verpackung.',
+        hazards: ['🌿 Überteuerter Kräutertee', '📦 Öko-Plastikverpackung'],
+        state: 'Verpackt in braunem Apothekerglas',
+        halftime: 'Haltbar bis nach dem Girokonto',
+        compound: 'Nh · Nt',
+        price: '39,90 € pro 50ml Pipettenflasche',
+        quote: '„Da ist nur die reine Kraft der Natur drin – und 45% Weingeist.“'
+      },
+      {
+        nr: 25,
+        sym: 'Om',
+        name: 'Omnium',
+        latin: 'Vibratio Cordis',
+        group: 'schwingung',
+        mass: '54.93 g',
+        freq: 136.1,
+        col: 13, row: 3,
+        prop: 'Wird durch monotones Chanten in der Gruppe angeregt. Erreicht das energetische Resonanzmaximum bei einem tiefen, vibrierenden „Auuuuuuummmm“.',
+        hazards: ['🧘 Beinkrämpfe im Lotussitz', '🗣️ Heiserkeit'],
+        state: 'Vokale Schallwelle',
+        halftime: 'Dauer eines Gong-Schlags',
+        compound: 'Om · Ks',
+        price: '45 € Yogastunden-Beitrag',
+        quote: '„Spürst du die Schwingung im Beckenboden? Das ist das Om!“'
+      },
+      {
+        nr: 26,
+        sym: '∞',
+        name: 'Infinityit',
+        latin: 'Numerus Infinitus',
+        group: 'schwingung',
+        mass: '∞ g',
+        freq: 888,
+        col: 14, row: 3,
+        prop: 'Besitzt als einziges Element keine Ordnungszahl. Verstärkt jede beliebige Energie um einen absolut unbezifferbaren Multiplikationsfaktor.',
+        hazards: ['🌀 Schwindelgefühl', '♾️ Endlosschleife im Vortrag'],
+        state: 'Liegende Acht',
+        halftime: 'Keine (ist ja unendlich)',
+        compound: '∞ · AE',
+        price: '888 € Energieausgleich',
+        quote: '„Die liegende Acht harmonisiert alle linksdrehenden Erdmeridiane.“'
+      },
+      {
+        nr: 27,
+        sym: 'Ay',
+        name: 'Ayurvedium',
+        latin: 'Aqua Cocta Diu',
+        group: 'schwingung',
+        mass: '58.93 g',
+        freq: 470,
+        col: 15, row: 3,
+        prop: 'Erreicht die maximale Heilwirkung, wenn gewöhnliches Leitungswasser mindestens 45 Minuten lang auf dem Herd zu Tode gekocht wurde.',
+        hazards: ['♨️ Hohe Gasrechnung', '☕ Fad schmeckende Brühe'],
+        state: 'Heiß und abgestanden',
+        halftime: 'Bis es wieder Zimmertemperatur hat',
+        compound: 'Ay · WGt',
+        price: '15 € im Wellness-Resort',
+        quote: '„Erst nach 45 Minuten Kochen öffnen sich die feinstofflichen Poren des Wassers.“'
+      },
+      {
+        nr: 28,
+        sym: 'Kd',
+        name: 'Kolloidium',
+        latin: 'Argentum Caeruleum',
+        group: 'schwingung',
+        mass: '58.69 g',
+        freq: 500,
+        col: 16, row: 3,
+        prop: 'Wird als Allheilmittel gegen Viren, Pilze und böse Blicke getrunken. Färbt bei ausgiebigem Konsum die Haut dauerhaft schlumpfblau (Argyrie).',
+        hazards: ['🔷 Blaufärbung der Epidermis', '🪙 Schwermetall-Akkumulation'],
+        state: 'Silberne Schwebe-Suspension',
+        halftime: 'Lebenslang im Gesicht sichtbar',
+        compound: 'Kd · Ag (Schlumpf-Sirup)',
+        price: '39 € pro Fläschchen',
+        quote: '„Papa Schlumpf hatte einfach nur ein extrem starkes Immunsystem!“'
+      },
+      {
+        nr: 29,
+        sym: 'Ks',
+        name: 'Klangschalon',
+        latin: 'Campana Tibetana',
+        group: 'edel',
+        mass: '63.54 g',
+        freq: 432,
+        col: 18, row: 3,
+        prop: 'Zerfällt bei Meditation in wohlige Vibrationen und sogenannte Ohmega-Strahlung. Reagiert mit keinem wissenschaftlichen Messgerät.',
+        hazards: ['🥣 Stolpergefahr über Messingschalen', '💆 Entspannung bis zur Apathie'],
+        state: 'Gegossene Bronze',
+        halftime: 'Bis der Klöppel abbricht',
+        compound: 'Ks · Fr',
+        price: '380 € für die tibetische Originalschale',
+        quote: '„Der Ton geht genau in die Leber rein und massiert die Traumata weg.“'
+      },
+      {
+        nr: 30,
+        sym: 'Pa',
+        name: 'Photon-Aurelius',
+        latin: 'Radius Aureus',
+        group: 'schwingung',
+        mass: '65.38 g',
+        freq: 777,
+        col: 13, row: 4,
+        prop: 'Erzeugt den sagenumwobenen Goldenen Lichtstrahl der 5. Dimension. Entfaltet seine maximale Strahlkraft bei fest zugekniffenen Augen.',
+        hazards: ['🙈 Blindheit für Rechnungen', '✨ Blendwirkung'],
+        state: 'Lichtpartikel auf Astralreise',
+        halftime: 'Bis man die Augen wieder aufmacht',
+        compound: 'Pa · Bp',
+        price: '1.111 € Transformations-Paket',
+        quote: '„Ich lade jetzt den goldenen Strahl von Erzengel Michael in deinen Solarplexus.“'
+      },
+      {
+        nr: 31,
+        sym: 'Md',
+        name: 'Meridianit',
+        latin: 'Canalis Invisibilis',
+        group: 'schwingung',
+        mass: '69.72 g',
+        freq: 480,
+        col: 14, row: 4,
+        prop: 'Fließt mit Hochgeschwindigkeit durch anatomisch auch mit stärksten Mikroskopen und MRTs absolut unauffindbare Leitungsbahnen.',
+        hazards: ['📌 Nadelstich-Trauma', '🔀 Falsch abgebogene Chi-Energie'],
+        state: 'Feinstofflich strömend',
+        halftime: 'Bis zum nächsten Akupunktur-Termin',
+        compound: 'Md · Ck',
+        price: '85 € Sitzungspauschale',
+        quote: '„Der Gallenblasen-Meridian staut sich bis in die Großzehe, darum bist du so grantig.“'
+      },
+      {
+        nr: 32,
+        sym: 'Kb',
+        name: 'Körblerium',
+        latin: 'Geometria Dermalis',
+        group: 'erdung',
+        mass: '72.63 g',
+        freq: 360,
+        col: 2, row: 4,
+        prop: 'Wird durch simples Aufmalen von Strichen, Kreuzen und Sinuskurven mit einem Filzstift auf die Haut aktiviert. Dient als Antenne gegen Rheuma.',
+        hazards: ['🖊️ Edding lässt sich schwer abwaschen', '〰️ Symbol-Kurzschluss'],
+        state: 'Tinte auf Epidermis',
+        halftime: 'Bis zum nächsten Duschgang',
+        compound: 'Kb · 3 Querstriche',
+        price: '28 € für das Heilsymbol-Handbuch',
+        quote: '„Zwei Striche heilen den Mückenstich, ein Sinus gleicht die Pollen aus.“'
+      },
+      {
+        nr: 33,
+        sym: 'Ft',
+        name: 'Floratherinum',
+        latin: 'Flores Bachiani',
+        group: 'schwingung',
+        mass: '74.92 g',
+        freq: 450,
+        col: 15, row: 4,
+        prop: 'Gewonnen aus dem Morgentau hochsensibler englischer Blütenkelche. Enthält Spuren von Hoffnung und exakt 40 Vol.-% billigen Weinbrand.',
+        hazards: ['🍷 Verdeckter Schwips am Steuer', '🌸 Überzogene Gefühlsduselei'],
+        state: 'Flüssig (hochprozentig)',
+        halftime: '4 Tropfen auf die Zunge',
+        compound: 'Ft · C₂H₅OH',
+        price: '19,90 € pro 20ml Fläschchen',
+        quote: '„Gegen Prüfungsangst hilft nur Star of Bethlehem und ein doppelter Cognac.“'
+      },
+      {
+        nr: 34,
+        sym: 'Qh',
+        name: 'Quantenheilon',
+        latin: 'Curatio Omnipotens',
+        group: 'edel',
+        mass: '78.96 g',
+        freq: 999,
+        col: 18, row: 4,
+        prop: 'Das schwerste stabile Schwurbelelement. Kann absolut jedes Leiden im Universum restlos erklären, aber rein gar nichts davon messen.',
+        hazards: ['🤯 Spontane Theorie-Kernschmelze', '📉 Totale Messverweigerung'],
+        state: 'Vollkommen unnahbar',
+        halftime: 'Stabil gegen jeden Peer-Review',
+        compound: 'Qh · Qn (Super-Matrix)',
+        price: '1.499 € Master-Practitioner-Diplom',
+        quote: '„Wir arbeiten in der 2-Punkt-Methode direkt in der Ur-Matrix deiner Seele.“'
+      },
+      /* Die Schwurbler-Transurane (Ordnungszahlen 90+) */
+      {
+        nr: 90,
+        sym: 'Iv',
+        name: 'Impfstoffium',
+        latin: 'Serum Diabolicum',
+        group: 'transuran',
+        mass: '232.0 g',
+        freq: 200,
+        col: 3, row: 8,
+        prop: 'Synthetisches Schreckgespenst. Verursacht laut Überlieferung ausnahmslos alles: von Autismus über schlechtes Wetter bis zum Sieg der Gegenpartei.',
+        hazards: ['💉 Phantomschmerz', '🧟 Angst vor Zombie-Transformation am 17. September'],
+        state: 'Toxisch in Kommentarspalten',
+        halftime: 'Jedes Quartal neue Mutation angekündigt',
+        compound: 'Iv · Bm (Pharma-Kollusion)',
+        price: 'Kostenlose Hysterie',
+        quote: '„Im September sind alle Geimpften tot! (Welches Jahr verrate ich noch nicht).“'
+      },
+      {
+        nr: 91,
+        sym: 'Ct',
+        name: 'Chemtrailon',
+        latin: 'Vapor Facebooki',
+        group: 'transuran',
+        mass: '231.0 g',
+        freq: 220,
+        col: 4, row: 8,
+        prop: 'Kondensiert bevorzugt auf Facebook-Screenshots und über Kleingartenkolonien. Wird mittels Essig-Verdampfen im Kochtopf heldenhaft bekämpft.',
+        hazards: ['✈️ Blick nach oben verrenkt Nacken', '🥗 Essigdunst auf der Terrasse'],
+        state: 'Aerosol aus Alu und Panik',
+        halftime: 'Bis der Wind den Kondensstreifen verweht',
+        compound: 'Ct · Or',
+        price: '35 € für die Essig-Sprühkanone',
+        quote: '„Normale Kondensstreifen lösen sich nach 20 Sekunden auf, das hier ist Geoengineering!“'
+      },
+      {
+        nr: 92,
+        sym: 'Rp',
+        name: 'Reptiloidinium',
+        latin: 'Lacerta Politiens',
+        group: 'transuran',
+        mass: '238.0 g',
+        freq: 180,
+        col: 5, row: 8,
+        prop: 'Gestaltwandler-Element. Steuert die Weltpolitik, züngelt bei Fernsehinterviews kurz mit der gespaltenen Zunge und schlüpft aus Hohlwelteiern.',
+        hazards: ['🦎 Schuppenbildung am Verstand', '🕳️ Angst vor Erdlöchern'],
+        state: 'Chamäleonartig getarnt',
+        halftime: 'Wird erst bei 240 fps Zeitlupe sichtbar',
+        compound: 'Rp · Ds',
+        price: 'Unbezahlbare Weltbeherrschung',
+        quote: '„Hast du die Pupille von der Tagesschau-Sprecherin bei Minute 14:02 gesehen?!“'
+      },
+      {
+        nr: 93,
+        sym: 'Ds',
+        name: 'DeepStatium',
+        latin: 'Gubernatio Umbrae',
+        group: 'transuran',
+        mass: '237.0 g',
+        freq: 190,
+        col: 6, row: 8,
+        prop: 'Kontrolliert angeblich alle 8 Milliarden Menschen gleichzeitig mit lückenloser Perfektion – vergisst dabei aber jedes Mal, die Telegram-Gruppe zu löschen.',
+        hazards: ['👁️ Allsehendes Auge', '🕵️ Akute Paranoia'],
+        state: 'Schattig und unterirdisch',
+        halftime: 'Bis zum Tag X (ständig verschoben)',
+        compound: 'Ds · Rp',
+        price: 'Gesteuert durch Eliten',
+        quote: '„Es gibt keine Zufälle. Alles ist von ganz oben genau so geplant!“'
+      },
+      {
+        nr: 94,
+        sym: '5G',
+        name: '5Gonium',
+        latin: 'Undae Mortales',
+        group: 'transuran',
+        mass: '244.0 g',
+        freq: 210,
+        col: 7, row: 8,
+        prop: 'Hochfrequentes Strahlungselement. Bringt injizierte Nanobots und Graphen-Partikel im Blutkreislauf zum rhythmischen Synchrontanz.',
+        hazards: ['🗼 Sendemast-Brandstiftung', '🧲 Löffel kleben an der Einstichstelle'],
+        state: 'Elektromagnetisch verseucht',
+        halftime: 'Bis der Vertrag ausläuft',
+        compound: '5G · Go (Tanzende Nanobots)',
+        price: '89,95 € / Monat im 5G-Tarif',
+        quote: '„Der Sendemast steht zwar seit 2 Jahren ohne Strom da, aber ich habe Tinnitus!“'
+      },
+      {
+        nr: 95,
+        sym: 'Go',
+        name: 'Graphenoxidat',
+        latin: 'Carbonium Conspirans',
+        group: 'transuran',
+        mass: '243.0 g',
+        freq: 230,
+        col: 8, row: 8,
+        prop: 'Kommt in absolut jeder Diskussion vor, wurde aber noch nie in einer Probe gefunden. Physisches Vorkommen: vermutlich unter der Weltscheibe.',
+        hazards: ['🧲 Klebt überall theoretisch fest', '🪒 Unsichtbare Rasierklingen'],
+        state: 'Einatomarer Mythos',
+        halftime: 'Zerfällt bei Rasterelektronenmikroskopie',
+        compound: 'Go · 5G',
+        price: 'Schwarzmarkt-Kurs auf Telegram',
+        quote: '„Das Zeug baut im Körper kleine Bluetooth-Antennen auf!“'
+      },
+      {
+        nr: 96,
+        sym: 'Vs',
+        name: 'Verstandium',
+        latin: 'Ratio Evanescens',
+        group: 'transuran',
+        mass: '247.0 g',
+        freq: 800,
+        col: 9, row: 8,
+        prop: 'Das flüchtigste Element im gesamten Schwurbel-Universum mit winziger Halbwertszeit. Im System meist ausschließlich durch vollkommene Abwesenheit nachgewiesen.',
+        hazards: ['💡 Droht mit logischen Schlüssen', '💥 Vernichtet Verschwörungstheorien'],
+        state: 'Sublimiert sofort',
+        halftime: '0,00001 Sekunden vor dem Kommentar',
+        compound: 'Nicht bindungsfähig im Schwurbel-Milieu',
+        price: 'Kostenlos, aber selten genutzt',
+        quote: '„Moment mal, das ergibt doch hinten und vorne überhaupt keinen Sinn?!“'
+      }
+    ];
+
+    let currentFilter = 'all';
+    let activeElement = null;
+    let selectedSlotElements = [null, null, null];
+
+    function initFilterBar() {
+      const container = document.getElementById('filterContainer');
+      container.innerHTML = '';
+
+      // "Alle" Button
+      const allBtn = document.createElement('button');
+      allBtn.className = `px-2.5 py-1 rounded-full font-medium transition-all ${currentFilter === 'all' ? 'bg-cyan-500 text-slate-950 font-bold shadow-sm' : 'bg-slate-900 border border-slate-700 text-slate-300 hover:border-slate-500'}`;
+      allBtn.textContent = 'Alle Elemente (38)';
+      allBtn.onclick = () => setFilter('all');
+      container.appendChild(allBtn);
+
+      // Category Buttons
+      Object.values(GROUPS).forEach(g => {
+        const btn = document.createElement('button');
+        const isActive = currentFilter === g.id;
+        btn.className = `px-2.5 py-1 rounded-full font-medium transition-all whitespace-nowrap flex items-center gap-1.5 ${isActive ? `${g.bg} ${g.text} border ${g.border} font-bold ring-1 ring-offset-1 ring-offset-slate-950 ring-${g.color}` : 'bg-slate-900/80 border border-slate-800 text-slate-400 hover:text-slate-200'}`;
+        btn.innerHTML = `<span class="w-2 h-2 rounded-full" style="background-color: ${g.color}"></span> ${g.name}`;
+        btn.onclick = () => setFilter(g.id);
+        container.appendChild(btn);
+      });
+    }
+
+    function setFilter(groupId) {
+      currentFilter = groupId;
+      initFilterBar();
+      renderAllTables();
+    }
+
+    /* Create an Element Tile DOM Component */
+    function createElementTile(el) {
+      const groupInfo = GROUPS[el.group] || GROUPS.schwingung;
+      const isFilteredOut = currentFilter !== 'all' && el.group !== currentFilter;
+      
+      const card = document.createElement('div');
+      card.className = `element-card rounded-xl p-1.5 sm:p-2 cursor-pointer flex flex-col justify-between font-mono-code border transition-all duration-200 ${groupInfo.bg} ${groupInfo.border} ${isFilteredOut ? 'opacity-20 grayscale' : 'opacity-100'}`;
+      card.style.color = groupInfo.color;
+      card.style.minHeight = '72px';
+      card.setAttribute('data-nr', el.nr);
+
+      card.innerHTML = `
+        <div class="flex items-center justify-between text-[10px] sm:text-[11px] font-bold text-slate-400 leading-none">
+          <span>${el.nr}</span>
+          <span class="text-[8px] font-normal opacity-70 truncate max-w-[34px]">${el.mass.split(' ')[0]}</span>
+        </div>
+        <div class="text-center my-0.5">
+          <div class="text-base sm:text-lg font-black tracking-tight leading-none">${el.sym}</div>
+        </div>
+        <div class="text-[9px] sm:text-[10px] font-sans font-semibold text-slate-200 truncate text-center leading-tight">
+          ${el.name}
+        </div>
+      `;
+
+      card.onclick = () => {
+        synth.playChime(el.freq || 440);
+        openElementModal(el);
+      };
+
+      return card;
+    }
+
+    function renderAllTables() {
+      const mainGrid = document.getElementById('mainTableGrid');
+      const lanthanoidRow = document.getElementById('lanthanoidRow');
+      const transuranRow = document.getElementById('transuranRow');
+
+      mainGrid.innerHTML = '';
+      lanthanoidRow.innerHTML = '';
+      transuranRow.innerHTML = '';
+
+      // Prepare empty 18 cols x 5 rows main board
+      // Rows: 1=Urstoff/Frequenzon, 2=Period 1, 3=Period 2, 4=Period 3, 5=Period 4 with Continuum
+      const mainGridMap = {};
+
+      ELEMENTS.forEach(el => {
+        if (el.row <= 5) {
+          mainGridMap[`${el.row}_${el.col}`] = el;
+        }
+      });
+
+      // Populate Main Grid
+      for (let r = 1; r <= 5; r++) {
+        for (let c = 1; c <= 18; c++) {
+          
+          // Special Big Continuum Block on Row 5 (Cols 3 to 16)
+          if (r === 5 && c === 3) {
+            const continuum = document.createElement('div');
+            continuum.className = 'hazard-stripe col-span-14 rounded-xl border border-yellow-500/30 p-2.5 flex items-center justify-between text-yellow-400/90 font-mono-code text-xs relative overflow-hidden';
+            continuum.style.gridColumn = '3 / span 14';
+            continuum.innerHTML = `
+              <div class="flex items-center gap-2.5 z-10">
+                <span class="text-xl animate-spin" style="animation-duration: 8s;">🕳️</span>
+                <div>
+                  <span class="font-bold text-yellow-300 flex items-center gap-2">
+                    DAS DUNKLE TELEGRAM-KONTINUUM (35–89)
+                    <span class="text-[10px] px-2 py-0.5 rounded-full bg-yellow-500/20 text-yellow-200 border border-yellow-500/40 uppercase tracking-wider font-sans font-bold">Klick mich</span>
+                  </span>
+                  <span class="block text-[10px] text-yellow-400/90 font-sans">Das Vakuum des gesunden Menschenverstands. Hier kollabiert jegliche empirische Logik.</span>
+                </div>
+              </div>
+              <div class="hidden sm:flex items-center gap-2 text-[10px] text-yellow-300 font-sans z-10 pr-2">
+                <span>Singularität öffnen</span>
+                <span class="px-2 py-0.5 rounded bg-yellow-400 text-slate-950 font-bold font-mono-code">🕳️ INSPEKTION</span>
+              </div>
+            `;
+            continuum.classList.add('cursor-pointer', 'hover:border-yellow-400', 'transition-all', 'hover:scale-[1.005]', 'active:scale-[0.99]');
+            continuum.onclick = () => {
+              synth.playChime(108, 1.2); // deep resonance of the void
+              openContinuumModal();
+            };
+            mainGrid.appendChild(continuum);
+            c += 13; // Skip the spanned columns
+            continue;
+          }
+
+          const el = mainGridMap[`${r}_${c}`];
+          if (el) {
+            const tile = createElementTile(el);
+            tile.style.gridRow = r;
+            tile.style.gridColumn = c;
+            mainGrid.appendChild(tile);
+          } else {
+            // Empty placeholder cell
+            const empty = document.createElement('div');
+            empty.className = 'hidden sm:block pointer-events-none';
+            empty.style.gridRow = r;
+            empty.style.gridColumn = c;
+            mainGrid.appendChild(empty);
+          }
+        }
+      }
+
+      // Populate Esoterische Erden Row
+      ELEMENTS.filter(e => e.group === 'lanthanoid').forEach(el => {
+        lanthanoidRow.appendChild(createElementTile(el));
+      });
+
+      // Populate Transurane Row
+      ELEMENTS.filter(e => e.group === 'transuran').forEach(el => {
+        transuranRow.appendChild(createElementTile(el));
+      });
+    }
+
+    const searchInput = document.getElementById('searchInput');
+    searchInput.addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase().trim();
+      const allCards = document.querySelectorAll('.element-card');
+      
+      allCards.forEach(card => {
+        const nr = card.getAttribute('data-nr');
+        const el = ELEMENTS.find(item => item.nr == nr);
+        if (!el) return;
+
+        const match = el.name.toLowerCase().includes(query) ||
+                      el.sym.toLowerCase().includes(query) ||
+                      el.nr.toString() === query ||
+                      el.prop.toLowerCase().includes(query) ||
+                      el.quote.toLowerCase().includes(query);
+
+        if (match) {
+          card.classList.remove('opacity-10', 'grayscale');
+          card.classList.add('opacity-100');
+        } else {
+          card.classList.add('opacity-10', 'grayscale');
+          card.classList.remove('opacity-100');
+        }
+      });
+    });
+
+    // Sound toggle
+    const soundToggleBtn = document.getElementById('soundToggleBtn');
+    soundToggleBtn.addEventListener('click', () => {
+      synth.enabled = !synth.enabled;
+      soundToggleBtn.classList.toggle('text-cyan-400', synth.enabled);
+      soundToggleBtn.classList.toggle('text-slate-600', !synth.enabled);
+      showToast(synth.enabled ? "Schwingungs-Audio aktiviert (432 Hz)" : "Audio stummgeschaltet");
+    });
+
+    // Random Pick Dogma
+    document.getElementById('randomPickBtn').addEventListener('click', () => {
+      const rand = ELEMENTS[Math.floor(Math.random() * ELEMENTS.length)];
+      synth.playChime(rand.freq || 520);
+      openElementModal(rand);
+    });
+
+    /* Continuum Modal Handlers */
+    const continuumModal = document.getElementById('continuumModal');
+    function openContinuumModal() {
+      continuumModal.classList.remove('hidden');
+    }
+    function closeContinuumModal() {
+      continuumModal.classList.add('hidden');
+    }
+    document.getElementById('closeContinuumBtn').onclick = closeContinuumModal;
+    document.getElementById('dismissContinuumBtn').onclick = closeContinuumModal;
+    document.getElementById('continuumBackdrop').onclick = closeContinuumModal;
+
+    /* Formula Modal & Calculator Handlers */
+    const formulaModal = document.getElementById('formulaModal');
+    const openFormulaBtn = document.getElementById('openFormulaBtn');
+    const closeFormulaBtn = document.getElementById('closeFormulaBtn');
+    const formulaBackdrop = document.getElementById('formulaBackdrop');
+
+    function openFormula() {
+      updateFormulaCalculation();
+      formulaModal.classList.remove('hidden');
+    }
+    function closeFormula() {
+      formulaModal.classList.add('hidden');
+    }
+    openFormulaBtn.onclick = openFormula;
+    closeFormulaBtn.onclick = closeFormula;
+    formulaBackdrop.onclick = closeFormula;
+
+    const sliderGefuehle = document.getElementById('sliderGefuehle');
+    const sliderExclamation = document.getElementById('sliderExclamation');
+    const sliderTestimonials = document.getElementById('sliderTestimonials');
+    const sliderStudies = document.getElementById('sliderStudies');
+
+    function updateFormulaCalculation() {
+      const gef = parseInt(sliderGefuehle.value, 10);
+      const exc = parseInt(sliderExclamation.value, 10);
+      const tst = parseInt(sliderTestimonials.value, 10);
+      const stu = parseInt(sliderStudies.value, 10);
+
+      document.getElementById('valGefuehle').textContent = `${gef} / 10`;
+      document.getElementById('valExclamation').textContent = '!'.repeat(Math.min(exc, 8)) + (exc > 8 ? ` (+${exc - 8})` : '');
+      document.getElementById('valTestimonials').textContent = `${tst} Tanten`;
+      document.getElementById('valStudies').textContent = stu === 0 ? '0 (Idealzustand)' : `${stu} Doppelblindstudien`;
+
+      const scoreEl = document.getElementById('resultScore');
+      const diagEl = document.getElementById('resultDiagnosis');
+
+      if (stu === 0) {
+        // Zero empirical evidence = Infinite esoteric efficacy
+        const pseudoPoints = (5 * Math.pow(gef, 2) * tst * exc);
+        scoreEl.textContent = `W = ∞ (${pseudoPoints.toLocaleString('de-DE')} Schwingungs-Einheiten)`;
+        scoreEl.className = 'text-2xl font-black font-mono-code text-amber-300';
+        diagEl.textContent = "Hervorragend! Keine einzige Doppelblindstudie trübt das Bauchgefühl. Das Produkt heilt alles und füllt das Bankkonto!";
+      } else {
+        // Peer-reviewed studies in denominator ruin everything
+        const numerator = (5 * Math.pow(gef, 2) * tst * Math.pow(exc, 1.2));
+        const denominator = (stu * 250);
+        const wValue = (numerator / denominator).toFixed(2);
+
+        if (stu >= 5) {
+          scoreEl.textContent = `W = ${wValue} (Totaler Wirkungsverlust)`;
+          scoreEl.className = 'text-2xl font-black font-mono-code text-rose-400';
+          diagEl.textContent = "ALARM! Viel zu viele wissenschaftliche Fakten im Nenner. Die feinstoffliche Energie ist restlos verpufft!";
+        } else {
+          scoreEl.textContent = `W = ${wValue} (Akute Gefährdung durch Fakten)`;
+          scoreEl.className = 'text-2xl font-black font-mono-code text-yellow-400';
+          diagEl.textContent = "Erste Anzeichen von Logik stören die Schwingung. Dringend mehr Ausrufezeichen in den Telegram-Kanal posten!";
+        }
+      }
+    }
+
+    [sliderGefuehle, sliderExclamation, sliderTestimonials, sliderStudies].forEach(slider => {
+      slider.addEventListener('input', updateFormulaCalculation);
+    });
+
+    document.getElementById('calcAudioBtn').addEventListener('click', () => {
+      const stu = parseInt(sliderStudies.value, 10);
+      if (stu === 0) {
+        synth.playChime(888, 0.7); // angelic chime
+      } else {
+        synth.playChime(150, 0.4); // disappointing low buzz
+      }
+    });
+
+    function openElementModal(el) {
+      activeElement = el;
+      const groupInfo = GROUPS[el.group] || GROUPS.schwingung;
+
+      document.getElementById('modalAtomicNumber').textContent = el.nr;
+      document.getElementById('modalSymbol').textContent = el.sym;
+      document.getElementById('modalSymbol').style.color = groupInfo.color;
+      document.getElementById('modalAtomicMass').textContent = el.mass;
+      document.getElementById('modalElementName').textContent = el.name;
+      document.getElementById('modalLatinName').textContent = el.latin;
+      document.getElementById('modalDescription').textContent = el.prop;
+      document.getElementById('modalQuote').textContent = el.quote;
+      document.getElementById('modalState').textContent = el.state;
+      document.getElementById('modalHalftime').textContent = el.halftime;
+      document.getElementById('modalCompound').textContent = el.compound;
+      document.getElementById('modalPrice').textContent = el.price;
+
+      // Group badge
+      const badge = document.getElementById('modalCategoryBadge');
+      badge.textContent = groupInfo.name;
+      badge.className = `text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${groupInfo.bg} ${groupInfo.border} ${groupInfo.text}`;
+
+      // Tile box styles
+      const tileBox = document.getElementById('modalTileBox');
+      tileBox.style.borderColor = groupInfo.color;
+      tileBox.style.boxShadow = `0 0 20px ${groupInfo.color}33`;
+
+      // Hazard tags
+      const ghsContainer = document.getElementById('modalGhsIcons');
+      ghsContainer.innerHTML = '';
+      el.hazards.forEach(h => {
+        const tag = document.createElement('div');
+        tag.className = 'p-2 rounded-lg bg-slate-950/80 border border-slate-800 text-slate-300 flex items-center gap-1.5';
+        tag.innerHTML = `<span class="text-xs">${h}</span>`;
+        ghsContainer.appendChild(tag);
+      });
+
+      // Show modal
+      document.getElementById('elementModal').classList.remove('hidden');
+    }
+
+    function closeElementModal() {
+      document.getElementById('elementModal').classList.add('hidden');
+      activeElement = null;
+    }
+
+    document.getElementById('closeModalBtn').onclick = closeElementModal;
+    document.getElementById('modalBackdrop').onclick = closeElementModal;
+
+    // Copy element quote / fact
+    document.getElementById('copyElementBtn').onclick = () => {
+      if (!activeElement) return;
+      const text = `Element ${activeElement.nr} | ${activeElement.sym} - ${activeElement.name} (${activeElement.latin})\nGruppe: ${GROUPS[activeElement.group].name}\nEigenschaft: ${activeElement.prop}\nSicherheitswarnung: ${activeElement.hazards.join(', ')}\nMarktwert: ${activeElement.price}\n"${activeElement.quote}"\n\n— Aus dem Periodensystem der Schwurbelei (PdS)`;
+      copyToClipboard(text);
+      showToast(`${activeElement.name} ins Clipboard kopiert!`);
+    };
+
+    const labModal = document.getElementById('labModal');
+    const openLabBtn = document.getElementById('openLabBtn');
+    const closeLabBtn = document.getElementById('closeLabBtn');
+    const labBackdrop = document.getElementById('labBackdrop');
+    const labChipContainer = document.getElementById('labChipContainer');
+
+    function openLab() {
+      renderLabChips();
+      renderSlots();
+      labModal.classList.remove('hidden');
+    }
+
+    function closeLab() {
+      labModal.classList.add('hidden');
+    }
+
+    openLabBtn.onclick = openLab;
+    closeLabBtn.onclick = closeLab;
+    labBackdrop.onclick = closeLab;
+
+    document.getElementById('addSynthesizerBtn').onclick = () => {
+      if (!activeElement) return;
+      addToSlot(activeElement);
+      closeElementModal();
+      openLab();
+    };
+
+    function renderLabChips() {
+      labChipContainer.innerHTML = '';
+      ELEMENTS.forEach(el => {
+        const btn = document.createElement('button');
+        btn.className = 'px-2 py-1 bg-slate-900 hover:bg-slate-800 border border-slate-700/80 rounded-lg text-xs text-slate-300 hover:text-white transition-colors flex items-center gap-1 font-mono-code';
+        btn.innerHTML = `<span class="font-bold text-cyan-400">${el.sym}</span> <span class="font-sans text-[11px] text-slate-400 truncate max-w-[80px]">${el.name}</span>`;
+        btn.onclick = () => {
+          synth.playChime(el.freq || 440);
+          addToSlot(el);
+        };
+        labChipContainer.appendChild(btn);
+      });
+    }
+
+    function addToSlot(el) {
+      const emptyIdx = selectedSlotElements.findIndex(s => s === null);
+      if (emptyIdx !== -1) {
+        selectedSlotElements[emptyIdx] = el;
+      } else {
+        selectedSlotElements[0] = el; // replace first if full
+      }
+      renderSlots();
+    }
+
+    function renderSlots() {
+      for (let i = 0; i < 3; i++) {
+        const slot = document.getElementById(`slot${i}`);
+        const el = selectedSlotElements[i];
+        if (el) {
+          const groupInfo = GROUPS[el.group];
+          slot.className = `border-2 rounded-xl p-3 flex flex-col items-center justify-between min-h-[95px] relative ${groupInfo.bg} ${groupInfo.border}`;
+          slot.innerHTML = `
+            <button onclick="clearSlot(${i})" class="absolute top-1.5 right-1.5 text-slate-400 hover:text-rose-400 text-xs">✕</button>
+            <div class="text-[10px] font-mono-code font-bold text-slate-400">#${el.nr}</div>
+            <div class="text-xl font-mono-code font-black text-white">${el.sym}</div>
+            <div class="text-[11px] font-bold text-slate-200 truncate max-w-[120px]">${el.name}</div>
+          `;
+        } else {
+          slot.className = 'border-2 border-dashed border-slate-800 rounded-xl p-3 flex flex-col items-center justify-center min-h-[95px] bg-slate-950/40 text-slate-600';
+          slot.innerHTML = `<span class="text-xs font-mono-code">Slot ${i + 1} leer</span>`;
+        }
+      }
+    }
+
+    window.clearSlot = function(index) {
+      selectedSlotElements[index] = null;
+      renderSlots();
+    };
+
+    document.getElementById('clearSlotsBtn').onclick = () => {
+      selectedSlotElements = [null, null, null];
+      renderSlots();
+      document.getElementById('synthesisResult').classList.add('hidden');
+    };
+
+    document.getElementById('synthesizeBtn').onclick = () => {
+      const activeSlots = selectedSlotElements.filter(Boolean);
+      if (activeSlots.length === 0) {
+        showToast("Wähle mindestens 1 Element im Labor aus!");
+        return;
+      }
+
+      synth.playChime(660, 0.8);
+      setTimeout(() => synth.playChime(880, 0.9), 150);
+
+      const prefixes = ["Quanten-", "Bio-Resonanz-", "Astral-", "Feinstoffliches ", "Orgon-", "Holo-Matrix-", "Kosmisches "];
+      const suffixes = ["-Elixier 3000", "-Essenz C1000", "-Harmonisierer", "-Aura-Spray", "-Tropfen nach Dr. Murks", "-Schutzamulett"];
+      const slogans = [
+        "Löscht karmische Blockaden und entstört das WLAN auf Zellebene.",
+        "Harmonisiert Wasseradern und schützt verlässlich vor kritischen Nachfragen.",
+        "Zieht positive Wohlstandsfrequenzen direkt in die Hausbank an.",
+        "Nur 3 Tropfen morgens auf die Zunge und der Verstand weicht sanfter Gelassenheit.",
+        "Verwirbelt bei abnehmendem Mond im Uhrzeigersinn nach altem Templer-Rezept."
+      ];
+
+      const formula = activeSlots.map(e => e.sym).join(' · ');
+      const name = prefixes[Math.floor(Math.random() * prefixes.length)] + 
+                   activeSlots.map(e => e.name).join('-') + 
+                   suffixes[Math.floor(Math.random() * suffixes.length)];
+      
+      const slogan = slogans[Math.floor(Math.random() * slogans.length)];
+      const price = (Math.floor(Math.random() * 80) * 10 + 199.90).toFixed(2).replace('.', ',') + ' €';
+
+      document.getElementById('resFormula').textContent = formula;
+      document.getElementById('resName').textContent = name;
+      document.getElementById('resSlogan').textContent = slogan;
+      document.getElementById('resPrice').textContent = price;
+      document.getElementById('synthesisResult').classList.remove('hidden');
+    };
+
+    /* Helper: Clipboard copy fallback */
+    function copyToClipboard(text) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).catch(() => fallbackCopy(text));
+      } else {
+        fallbackCopy(text);
+      }
+    }
+
+    function fallbackCopy(text) {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      textArea.style.position = "fixed";
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try {
+        document.execCommand('copy');
+      } catch (err) {
+        console.error('Fallback copy failed', err);
+      }
+      document.body.removeChild(textArea);
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastMsg').textContent = msg;
+      toast.classList.remove('hidden');
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 3200);
+    }
+
+    window.onload = () => {
+      initFilterBar();
+      renderAllTables();
+    };
+  </script>
+</body>
+</html>
